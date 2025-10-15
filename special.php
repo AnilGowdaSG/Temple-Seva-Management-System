@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Events Management</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FFF8E1; /* Light Cream */
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            background-color: #FF6F00; /* Bright Orange */
+            color: white;
+            width: 200px; /* Sidebar width */
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            display: block;
+            font-size: 18px;
+            border-bottom: 1px solid #FF8F00;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #FF8F00; /* Darker orange on hover */
+        }
+
+        /* Content Section */
+        .content {
+            margin-left: 220px; /* Adjusted margin for sidebar */
+            width: calc(100% - 220px);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        header {
+            background-color: #FF8F00; /* Darker Orange */
+            color: white;
+            padding: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 220px; /* Adjusted header position */
+            z-index: 10;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Search Bar and Button */
+        .search-container {
+            margin-top: 80px; /* Space below header */
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            font-size: 16px;
+            width: 300px;
+            border-radius: 8px;
+            border: 1px solid #bbb;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #FF8F00;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #FF8F00; /* Darker Orange */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #FF6F00; /* Darker shade on hover */
+        }
+
+        /* Table Styling */
+        table {
+            width: 95%;
+            margin-top: 40px;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            font-size: 16px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #FF8F00; /* Darker Orange */
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Light gray for even rows */
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* No Results Text */
+        .no-results {
+            text-align: center;
+            font-size: 18px;
+            color: #FF6F00;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav>
+        <a href="menu.php">Menu</a>
+        <a href="up3.php">Update</a>
+        <a href="del4.php">Delete</a>
+        <a href="in4.php">Insert</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+        <header>
+            <h1>Special Events Management</h1>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="eventSearchInput" placeholder="Search by Event Name">
+            <button onclick="searchEvent()">Search</button>
+        </div>
+
+        <?php
+        include("database.php");
+
+        $sql = "SELECT * FROM SpecialEvents";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            echo "<table>
+                    <tr>
+                        <th>Event ID</th>
+                        <th>Event Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Venue</th>
+                        <th>Manager ID</th>
+                    </tr>";
+
+            while($row = $result->fetch_assoc()) {
+                echo "<tr>
+                        <td>".$row["EventID"]."</td>
+                        <td>".$row["EventName"]."</td>
+                        <td>".$row["Description"]."</td>
+                        <td>".$row["Date"]."</td>
+                        <td>".$row["Time"]."</td>
+                        <td>".$row["Venue"]."</td>
+                        <td>".$row["ManagerID"]."</td>
+                    </tr>";
+            }
+            echo "</table>";
+        } else {
+            echo "<p class='no-results'>No events found.</p>";
+        }
+
+        $conn->close();
+        ?>
+    </div>
+
+    <script>
+        function searchEvent() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("eventSearchInput");
+            filter = input.value.toUpperCase();
+            table = document.querySelector("table");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1]; // Event Name column
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

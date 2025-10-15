@@ -1,0 +1,54 @@
+1. Find the total revenue generated from all sevas conducted in December 2024.
+
+SELECT SUM(Cost) AS TotalRevenue 
+FROM Seva 
+WHERE MONTH(Date) = 12 AND YEAR(Date) = 2024;
+
+2. List the managers responsible for managing marriage halls with capacities greater than 400.
+
+SELECT Manager.ManagerName, MarriageHall.HallName, MarriageHall.Capacity 
+FROM Manager 
+JOIN MarriageHall ON Manager.ManagerID = MarriageHall.ManagerID 
+WHERE MarriageHall.Capacity > 400;
+
+3. Retrieve the names of priests conducting sevas on or after '2024-12-28'.
+
+SELECT Priest.PriestName, Seva.SevaName, Seva.Date 
+FROM Priest 
+JOIN Seva ON Priest.PriestID = Seva.PriestID 
+WHERE Seva.Date >= '2024-12-28';
+
+4. Find the average salary of priests conducting sevas in December 2024
+
+SELECT AVG(Priest.Salary) AS AverageSalary 
+FROM Priest 
+JOIN Seva ON Priest.PriestID = Seva.PriestID 
+WHERE MONTH(Seva.Date) = 12 AND YEAR(Seva.Date) = 2024;
+
+
+5. Find all special events scheduled in "Kalabhairava Temple" along with their dates and times.
+
+SELECT EventName, Description, Date, Time 
+FROM SpecialEvents 
+WHERE Venue = 'Kalabhairava Temple';
+
+
+6. Count the total number of marriage halls booked in January 2025.
+
+SELECT COUNT(*) AS TotalHallsBooked 
+FROM MarriageHall 
+WHERE MONTH(BookingDate) = 1 AND YEAR(BookingDate) = 2025;
+
+
+7. List the pooja expertise of priests earning a salary above ₹25,000.
+
+SELECT PriestName, PoojaExpertise, Salary 
+FROM Priest 
+WHERE Salary > 25000;
+
+8. Retrieve the details of sevas conducted by "Pandit Vasudev."
+
+SELECT SevaName, Description, Duration, Cost, Date 
+FROM Seva 
+JOIN Priest ON Seva.PriestID = Priest.PriestID 
+WHERE Priest.PriestName = 'Pandit Vasudev';
